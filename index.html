@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday Maria 💖</title>
+
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+body {
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  overflow: hidden;
+  transition: background 1s ease;
+  cursor: default;
+}
+
+.heart, .cursor-heart {
+  position: fixed;
+  animation: floatUp 5s linear infinite;
+}
+
+.cursor-heart {
+  animation: none;
+}
+
+@keyframes floatUp {
+  0% { transform: translateY(100vh); opacity: 1; }
+  100% { transform: translateY(-10vh); opacity: 0; }
+}
+
+.balloon {
+  position: fixed;
+  bottom: -100px;
+  font-size: 2rem;
+  animation: rise 7s linear forwards;
+}
+
+@keyframes rise {
+  0% { bottom: -100px; transform: translateX(0) rotate(0deg); }
+  100% { bottom: 100vh; transform: translateX(50px) rotate(360deg); }
+}
+
+.sparkle {
+  position: fixed;
+  font-size: 1.5rem;
+  animation: sparkleAnim 1s linear infinite;
+}
+
+@keyframes sparkleAnim {
+  0% { opacity: 0; transform: scale(0); }
+  50% { opacity: 1; transform: scale(1.5); }
+  100% { opacity: 0; transform: scale(0); }
+}
+
+#finalScreen {
+  display: none;
+  position: fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+  color:white;
+  font-size:2rem;
+  font-weight:bold;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction: column;
+  z-index:999;
+  text-align:center;
+  padding: 20px;
+}
+</style>
+</head>
+
+<body class="min-h-screen flex items-center justify-center px-4">
+
+<div id="mainContent" class="bg-white shadow-2xl rounded-2xl p-6 sm:p-8 max-w-md w-full text-center">
+
+<h1 id="title" class="text-3xl sm:text-4xl font-extrabold text-pink-500 mb-4">
+🎂 Happy Birthday Maria 💖 🎂
+</h1>
+
+<p id="message" class="text-lg text-gray-700 mb-6"></p>
+
+<div id="emoji" class="text-5xl mb-6">🎉🎈🎁</div>
+
+<button id="nextBtn" onclick="nextStep()" 
+class="mt-4 px-6 py-3 bg-pink-500 text-white rounded-xl shadow hover:bg-pink-600 transition">
+Start Surprise 🎊
+</button>
+
+<p id="secret" class="hidden text-pink-600 mt-4 font-semibold">
+💖 You are my everything 💖
+</p>
+
+</div>
+
+<div id="finalScreen">
+🎉🎊 Hooray! You finished the birthday surprise! 💖<br>
+Thank you for celebrating Maria! 🎁
+</div>
+
+<audio id="bgMusic" src="https://www.bensound.com/bensound-music/bensound-happyrock.mp3"></audio>
+
+<script>
+let step = 0;
+const messages = [
+  "Today is all about you, Maria 💕",
+  "Tumi amar jonne onek special 🥺💖",
+  "Tumi eto cute j ami ar ki bolbo ☺️",
+  "Ami chai tumi sob somoy emni happy thako 🌸",
+  "Happy Birthday once again, amar favourite person 💝"
+];
+
+const backgrounds = [
+  "linear-gradient(135deg, #ff9a9e, #fad0c4)",
+  "linear-gradient(135deg, #a1c4fd, #c2e9fb)",
+  "linear-gradient(135deg, #fbc2eb, #a6c1ee)",
+  "linear-gradient(135deg, #fdcbf1, #e6dee9)",
+  "linear-gradient(135deg, #ffe29f, #ffa99f)"
+];
+
+function typeText(text) {
+  let i = 0;
+  document.getElementById("message").innerHTML = "";
+  let typing = setInterval(() => {
+    document.getElementById("message").innerHTML += text.charAt(i);
+    i++;
+    if(i >= text.length) clearInterval(typing);
+  }, 40);
+}
+
+function createHeart() {
+  let heart = document.createElement("div");
+  heart.className = "heart";
+  heart.innerHTML = "💖";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.fontSize = (Math.random() * 20 + 20) + "px";
+  document.body.appendChild(heart);
+  setTimeout(() => heart.remove(), 5000);
+}
+
+function createBalloon() {
+  let balloon = document.createElement("div");
+  balloon.className = "balloon";
+  balloon.innerHTML = "🎈";
+  balloon.style.left = Math.random() * 90 + "vw";
+  document.body.appendChild(balloon);
+  setTimeout(() => balloon.remove(), 7000);
+}
+
+function createSparkle() {
+  let sparkle = document.createElement("div");
+  sparkle.className = "sparkle";
+  sparkle.innerHTML = "✨";
+  sparkle.style.left = Math.random() * 100 + "vw";
+  sparkle.style.top = Math.random() * 80 + "vh";
+  document.body.appendChild(sparkle);
+  setTimeout(() => sparkle.remove(), 1000);
+}
+
+function nextStep() {
+  document.getElementById("bgMusic").play();
+
+  if(step < messages.length) {
+    typeText(messages[step]);
+    document.body.style.background = backgrounds[step];
+    confetti({ particleCount: 120, spread: 100, origin: { y:0.6 } });
+
+    for(let i=0;i<5;i++) createHeart();
+    for(let i=0;i<3;i++) createBalloon();
+    for(let i=0;i<7;i++) createSparkle();
+
+    step++;
+
+    if(step === messages.length) {
+      document.getElementById("nextBtn").innerText = "Finish 🎉";
+    }
+
+    // auto next step after 3 sec
+    setTimeout(() => {
+      if(step < messages.length) nextStep();
+    }, 3000);
+
+  } else {
+    document.getElementById("mainContent").style.display = "none";
+    document.getElementById("finalScreen").style.display = "flex";
+    confetti({ particleCount: 500, spread: 200 });
+    for(let i=0;i<20;i++) createHeart();
+    for(let i=0;i<15;i++) createBalloon();
+    for(let i=0;i<30;i++) createSparkle();
+  }
+}
+
+// initial message
+typeText("Click the button for a surprise Maria 🎁");
+
+// floating hearts continuously
+setInterval(createHeart, 600);
+
+// cursor-follow hearts for fun
+document.body.addEventListener("mousemove", (e)=>{
+  let heart = document.createElement("div");
+  heart.className = "cursor-heart";
+  heart.innerHTML = "💖";
+  heart.style.left = e.clientX + "px";
+  heart.style.top = e.clientY + "px";
+  heart.style.fontSize = (Math.random()*15+10)+"px";
+  document.body.appendChild(heart);
+  setTimeout(()=>heart.remove(), 1000);
+});
+
+// secret hidden message (long press)
+let timer;
+document.body.addEventListener("mousedown", () => {
+  timer = setTimeout(() => {
+    document.getElementById("secret").classList.remove("hidden");
+  }, 1500);
+});
+document.body.addEventListener("mouseup", () => clearTimeout(timer));
+
+</script>
+</body>
+</html>
